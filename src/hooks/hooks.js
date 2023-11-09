@@ -18,10 +18,6 @@ export const DataProvider = ({ children }) => {
   const stopLoading = () => {
     setLoading(false);
   };
-  useEffect(()=>{
-      const isUser = sessionStorage.getItem("user")
-      setUser(isUser?JSON.parse(isUser):"")
-  },[])
   useEffect(() => {  
     const performSearch = async () => {
       try {
