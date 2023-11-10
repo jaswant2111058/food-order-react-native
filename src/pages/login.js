@@ -1,11 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native';
+import { useData } from '../hooks/hooks';
 
 export default function Login({navigation}) {
+
+    const{user}= useData()
+    user?.user_name?navigation.navigate('Home'):console.log(user)
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-
     return (
         <>
             <View>
@@ -49,7 +52,7 @@ export default function Login({navigation}) {
 
                 </View>
                 <View>
-                    <Pressable style={styles.button} onPress={() => { () => navigation.navigate('Home') }}>
+                    <Pressable style={styles.button} onPress={() => { () => console.log("y"); navigation.navigate('Home') }}>
                         <Text style={styles.text}>Login</Text>
                     </Pressable>
                 </View>
