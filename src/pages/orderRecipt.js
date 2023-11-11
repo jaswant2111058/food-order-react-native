@@ -7,29 +7,29 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/Entypo';
 import Rupee from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/AntDesign';
-import BottomNav from '../components/bottomNav';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+
 export default function OrderRecipt({ navigation }) {
 
-    const [recipt, setRecipt] = useState({})
+    const {recipt} =useData()
 
-    useEffect(() => {
-        const isUser = async () => {
-            try {
-                const value = await AsyncStorage.getItem('order');
-                if (value !== null) {
-                    setRecipt(JSON.parse(value))
-                    console.log(recipt)
-                } else {
-                    console.log('No data found');
-
-                }
-            } catch (error) {
-                console.error('Error retrieving data: ', error);
-            }
-        };
-        isUser();
-    }, [])
+    // useEffect(() => {
+    //     const isUser = async () => {
+    //         try {
+    //             const value = await AsyncStorage.getItem('order');
+    //             console.log(value)
+    //             if (value !== null) {
+    //                 setRecipt(JSON.parse(value))
+                   
+    //             } else {
+    //                 console.log('No data found');
+    //             }
+    //         } catch (error) {
+    //             console.log('Error retrieving data: ', error);
+    //         }
+    //     };
+    //     isUser();
+    //     console.log(recipt)
+    // }, [])
 
     return (
         <>

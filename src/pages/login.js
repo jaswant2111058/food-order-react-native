@@ -8,11 +8,9 @@ import axios from 'axios';
 export default function Login({navigation}) {
 
     const { isLoading, startLoading, stopLoading,user,setUser,baseURL } = useData();
-    user?.username?navigation.navigate('Home'):console.log(user)
+   // user?.username?navigation.navigate('Home'):console.log(user)
     const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-   
-    
+    const [password, setPassword] = useState("") 
 
     const login = async () => {
         console.log("yes")
@@ -28,7 +26,7 @@ export default function Login({navigation}) {
            console.log(response)
           }
         } catch (err) {
-          console.error('Error during login:', err.message);
+          console.error('Error during   gj login:', err.message);
           Alert.alert('Error', 'An unexpected error occurred during login.');
         } finally {
           stopLoading();
@@ -61,17 +59,16 @@ export default function Login({navigation}) {
                         WELCOME TO FOOD BREAK !
                     </Text>
                 </View>
-                <View>
-
+                <View style={styles.inputs}>
                     <TextInput
-                        style={styles.input}
+                        style={styles.input1}
                         onChangeText={(value) => { setEmail(value) }}
                         type='email'
                         value={email}
                         placeholder="Email"
                     />
                     <TextInput
-                        style={styles.input}
+                        style={styles.input2}
                         onChangeText={(value) => { setPassword(value) }}
                         value={password}
                         type='password'
@@ -124,7 +121,23 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 20,
     },
-    input: {
+    input1: {
+        
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        borderRadius: 20,
+        backgroundColor: 'transparent',
+        width: 310,
+        height: 40,
+        borderWidth: 1,
+        textAlign: 'center',
+        marginBottom: 10,
+        marginTop: 10,
+        fontWeight: 'bold',
+        fontSize: 15,
+    },
+    input2: {
+       
         marginLeft: 'auto',
         marginRight: 'auto',
         borderRadius: 20,

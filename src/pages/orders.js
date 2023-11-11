@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, TextInput, Pressable, Alert,TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, Pressable, Alert, TouchableHighlight } from 'react-native';
 import { useData } from '../hooks/hooks';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/Entypo';
@@ -13,10 +13,9 @@ import axios from 'axios';
 
 export default function Order({ navigation }) {
 
-    const { selectedItem,isLoading, startLoading, stopLoading,user,setUser,baseURL  } = useData()
+    const { selectedItem, isLoading, startLoading, stopLoading, setRecipt, user, setUser, baseURL } = useData()
     const [totalAmmount, setTotalAmmount] = useState(0)
     const [quanitity, setQuanitity] = useState(0)
-    const [name, setName] = useState("")
     const [address, setAddress] = useState("")
 
     useEffect(() => {
@@ -29,7 +28,7 @@ export default function Order({ navigation }) {
             name: user.username,
             date: new Date(),
             startTime: new Date(),
-            endTime: new Date(Date.now()+ 1000 * 60 * 60),
+            endTime: new Date(Date.now() + 1000 * 60 * 60),
             fullAddress: address,
             item_type: selectedItem.item_type,
             item_name: selectedItem.itemName,
@@ -49,18 +48,23 @@ export default function Order({ navigation }) {
                 }
             );
 
-            if (response.data.error) {
-                Alert.alert('Error', response.data.error);
-            } else {
-                Alert.alert('Successfuly Placed Order');
+            if (response) {
+               
                 stopLoading();
-                await AsyncStorage.setItem('order', JSON.stringify(response.data));
-                navigation.navigate('OrderRecipt')
+                console.log(response.data)
+                setRecipt(response.data)
+               // await AsyncStorage.setItem('order', JSON.stringify(response.data));
                 console.log('Data saved successfully');
+                Alert.alert('Successfuly Placed Order');
+                navigation.navigate('OrderRecipt')
+
+            } else {
+
+                Alert.alert('Error', response.data.error);
             }
         } catch (err) {
-            console.error('Error during addEvent:', err.message);
-            Alert.alert('Error', 'An unexpected error occurred during addEvent.');
+            console.error('Error during orderEvent:', err.message);
+            Alert.alert('Error', 'An unexpected error occurred during orderdEvent.');
         } finally {
             stopLoading();
         }
@@ -119,7 +123,7 @@ export default function Order({ navigation }) {
                         </View>
                     </View>
                     <View >
-                        
+
                         <View>
                             <TextInput style={styles.input}
                                 value={address}
@@ -133,7 +137,7 @@ export default function Order({ navigation }) {
                         <Text style={styles.TotalAmmount}>
                             Total Ammount : ₹{totalAmmount}
                         </Text>
-                        <Pressable onPress={() => {() => console.log("y"); placeOrder() }} >
+                        <Pressable onPress={() => { () => console.log("y"); placeOrder() }} >
                             <Text style={styles.payBtn}>
                                 Pay
                             </Text>
@@ -144,14 +148,14 @@ export default function Order({ navigation }) {
             </View>
             <View style={styles.NavWrapper}>
                 <View style={styles.NavMain}>
-                    <TouchableHighlight onPress={() => {  navigation.navigate('Home') }}>
-                        <Icon2 name='home' size={30}/>
+                    <TouchableHighlight onPress={() => { navigation.navigate('Home') }}>
+                        <Icon2 name='home' size={30} />
                     </TouchableHighlight>
-                    <TouchableHighlight onPress={() => {  navigation.navigate('OrderRecipt') }}>
+                    <TouchableHighlight onPress={() => { navigation.navigate('OrderRecipt') }}>
                         <Text>Order</Text>
                     </TouchableHighlight>
-                    <TouchableHighlight onPress={() => {  navigation.navigate('Login') }}>
-                        <Icon3 name='logout' size={30}/>
+                    <TouchableHighlight onPress={() => { navigation.navigate('Login') }}>
+                        <Icon3 name='logout' size={30} />
                     </TouchableHighlight>
                 </View>
             </View>
@@ -265,17 +269,17 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         borderColor: '#FBBD10'
     },
-    NavWrapper:{
-        position:'absolute',
-        bottom:0,
-        paddingLeft:10,
-        paddingRight:10,
-        backgroundColor:'white',
+    NavWrapper: {
+        position: 'absolute',
+        bottom: 0,
+        paddingLeft: 10,
+        paddingRight: 10,
+        backgroundColor: 'white',
     },
-    NavMain:{
-        
-        flexDirection:'row',
-        gap:125,
+    NavMain: {
+
+        flexDirection: 'row',
+        gap: 125,
     }
 
 });

@@ -10,7 +10,7 @@ import Icon2 from 'react-native-vector-icons/FontAwesome';
 
 export default function Home({ navigation }) {
 
-    const { user, getItem, setSelectedItem } = useData()
+    const { user, getItem, setSelectedItem,logout } = useData()
      user?.username?console.log("yes"):navigation.navigate('Login')
     return (
         <>
@@ -92,7 +92,7 @@ export default function Home({ navigation }) {
                     <TouchableHighlight onPress={() => {  navigation.navigate('OrderRecipt') }}>
                         <Text>Order</Text>
                     </TouchableHighlight>
-                    <TouchableHighlight onPress={() => {  navigation.navigate('Login') }}>
+                    <TouchableHighlight onPress={() => { console.log("y"); logout(); navigation.navigate('Login') }}>
                         <Star name='logout' size={30}/>
                     </TouchableHighlight>
                 </View>

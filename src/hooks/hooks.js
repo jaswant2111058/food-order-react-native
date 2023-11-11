@@ -14,64 +14,74 @@ export const DataProvider = ({ children }) => {
   const [getItem, setItem] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
   const [isLoading, setLoading] = useState(false);
-  const [user,setUser]=useState({})
+  const [user, setUser] = useState({})
+  const [recipt, setRecipt] = useState({})
   const baseURL = "http://192.168.79.229:5000"
   const startLoading = () => {
     setLoading(true);
   };
-  useEffect(()=>{
+  useEffect(() => {
     const isUser = async () => {
-        try {
-          const value = await AsyncStorage.getItem('user');
-          if (value !== null) {
-            setUser(JSON.parse(value))
-          } else {
-            console.log('No data found');
-          }
-        } catch (error) {
-          console.error('Error retrieving data: ', error);
+      try {
+        const value = await AsyncStorage.getItem('user');
+        if (value !== null) {
+          setUser(JSON.parse(value))
+        } else {
+          console.log('No data found');
         }
-      };
-      isUser();
-    
-},[])
+      } catch (error) {
+        console.error('Error retrieving data: ', error);
+      }
+    };
+    isUser();
+
+  }, [])
 
 
   const stopLoading = () => {
     setLoading(false);
   };
 
+  const logout = async () => {
+    try {
+      await AsyncStorage.removeItem('user');
+      console.log('User data removed successfully');
+    } catch (error) {
+      console.error('Error removing user data:', error);
+    }
+  }
 
-  useEffect(() => {  
+
+  useEffect(() => {
     const performSearch = async () => {
       try {
-        const response = await axios.get(`${baseURL}/getitem?field=${field}&q=${query}`); 
-            if(response){
-              setItem(response.data);
-            }
+        const response = await axios.get(`${baseURL}/getitem?field=${field}&q=${query}`);
+        if (response) {
+          setItem(response.data);
+        }
       } catch (error) {
-        console.error('Error searching:',error);
-      } 
+        console.error('Error searching:', error);
+      }
     };
-    if (query.length>2) {
+    if (query.length > 2) {
       performSearch();
     } else {
-        setSearchResult([]);
+      setSearchResult([]);
     }
-  }, [query,field]);
+  }, [query, field]);
 
 
 
-  useEffect(() => {  
+  useEffect(() => {
     const getFoodItem = async () => {
       try {
-        const response = await axios.get(`${baseURL}/getallitem`); 
-            if(response){
-              setItem(response.data);
-            }
+        const response = await axios.get(`${baseURL}/getallitem`);
+        if (response) {
+          setItem(response.data);
+        }
       } catch (error) {
-        console.error('Error searching:',error);
-      } 
+        console.error('Error searching:', error);
+      }
     };
     getFoodItem();
     console.log("hook1")
@@ -81,22 +91,23 @@ export const DataProvider = ({ children }) => {
 
   return (
     <DateContext.Provider value={{
-       query, 
-       setQuery, 
-       isLoading,
-       startLoading, 
-       stopLoading,
-       user,
-       setUser,
-       searchResult,
-       field, 
-       setField,
-       getItem, 
-       setItem,
-       selectedItem, 
-       setSelectedItem,
-       baseURL
-       }}>
+      query,
+      setQuery,
+      isLoading,
+      startLoading,
+      stopLoading,
+      user,
+      setUser,
+      searchResult,
+      field,
+      setField,
+      getItem,
+      setItem,
+      selectedItem,
+      setSelectedItem,
+      baseURL,logout,
+      recipt, setRecipt
+    }}>
       {children}
     </DateContext.Provider>
   );
