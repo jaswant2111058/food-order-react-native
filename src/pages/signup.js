@@ -1,11 +1,43 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, Pressable,Alert } from 'react-native';
+import { useData } from '../hooks/hooks';
+import axios from 'axios';
 
 export default function SignUp({navigation}) {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [name, setName] = useState("")
+    const { isLoading, startLoading, stopLoading,setUser } = useData();
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [repass, setRepass] = useState('');
+    const baseURL = "http://192.168.79.229:5000"
+
+
+    const signup = async () => {
+        if (password !== repass || !username || !email) {
+          Alert.alert('Error', 'Enter valid data. Password and Repassword should match.');
+        } else {
+          try {
+            startLoading();
+            const user = { username, email, password };
+            const response = await axios.post(`${baseURL}/signup`, user);
+    
+            if (response.data.error) {
+              Alert.alert('Error', response.data.error);
+            } else {
+              Alert.alert('Success', response.data.message);
+              navigation.navigate('Login')
+            }
+          } catch (err) {
+            console.error('Error during signup:', err.message);
+            Alert.alert('Error', 'An unexpected error occurred during signup.');
+          } finally {
+            stopLoading();
+          }
+        }
+      };
+    
+
 
     return (
         <>
@@ -35,9 +67,9 @@ export default function SignUp({navigation}) {
 
                     <TextInput
                         style={styles.input}
-                        onChangeText={(value) => { setName(value) }}
+                        onChangeText={(value) => { setUsername(value) }}
                         type='email'
-                        value={name}
+                        value={username}
                         placeholder="Full Name"
                     />
                     <TextInput
@@ -56,15 +88,15 @@ export default function SignUp({navigation}) {
                     />
                     <TextInput
                         style={styles.input}
-                        onChangeText={(value) => { setPassword(value) }}
-                        value={password}
+                        onChangeText={(value) => { setRepass(value) }}
+                        value={repass}
                         type='password'
                         placeholder="Re-Password"
                     />
 
                 </View>
                 <View>
-                    <Pressable style={styles.button} onPress={() => { }}>
+                    <Pressable style={styles.button} onPress={() => { () => console.log("y"); signup()  }}>
                         <Text style={styles.text}>SignUp</Text>
                     </Pressable>
                 </View>

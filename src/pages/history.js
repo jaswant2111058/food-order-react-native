@@ -5,9 +5,9 @@ import { useData } from '../hooks/hooks';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/Entypo';
 import Star from 'react-native-vector-icons/AntDesign';
-import BottomNav from '../components/bottomNav';
+import Search from '../components/search';
 
-export default function Order({ navigation }) {
+export default function History({ navigation }) {
 
     const { user, selectedItem } = useData()
     const [totalAmmount, setTotalAmmount] = useState(0)
@@ -89,16 +89,14 @@ export default function Order({ navigation }) {
                         <Text style={styles.TotalAmmount}>
                             Total Ammount : ₹{totalAmmount}
                         </Text>
-                        <Pressable onPress={()=>{navigation.navigate('OrderRecipt')}} >
+                        <Pressable >
                             <Text style={styles.payBtn}>
                                 Pay
                             </Text>
                         </Pressable>
                     </View>
-                    
                 </View>
             </View>
-            <BottomNav/> 
         </>
     );
 }
@@ -210,5 +208,4 @@ const styles = StyleSheet.create({
         borderRadius:20,
         borderColor:'#FBBD10'
     }
-
 });

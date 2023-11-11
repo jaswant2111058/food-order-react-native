@@ -1,14 +1,52 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, Pressable,Alert } from 'react-native';
 import { useData } from '../hooks/hooks';
+import axios from 'axios';
 
 export default function Login({navigation}) {
 
-    const{user}= useData()
+    const { isLoading, startLoading, stopLoading,user,setUser } = useData();
     user?.user_name?navigation.navigate('Home'):console.log(user)
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const baseURL = "http://192.168.79.229:5000"
+
+    const showAlert = (  ) => {
+        Alert.alert(
+          'Name Required',
+          'Player Name Required to continuie',
+          [
+            {
+              text: 'OK',
+            },
+          ],
+          { cancelable: false }
+        );
+      };
+
+    const login = async () => {
+        console.log("yes")
+        startLoading();
+        const user = { email, password };
+        try {
+          const response = await axios.post(`${baseURL}/login`, user);
+          if (response) {
+            setUser(response.data.user); 
+            navigation.navigate('Home') 
+          } else {
+           console.log(response)
+          }
+        } catch (err) {
+          console.error('Error during login:', err.message);
+          Alert.alert('Error', 'An unexpected error occurred during login.');
+        } finally {
+          stopLoading();
+        }
+      };
+
+
+
     return (
         <>
             <View>
@@ -49,10 +87,9 @@ export default function Login({navigation}) {
                         type='password'
                         placeholder="Password"
                     />
-
                 </View>
                 <View>
-                    <Pressable style={styles.button} onPress={() => { () => console.log("y"); navigation.navigate('Home') }}>
+                    <Pressable style={styles.button} onPress={() => { () => console.log("y"); login() }}>
                         <Text style={styles.text}>Login</Text>
                     </Pressable>
                 </View>

@@ -8,11 +8,14 @@ export const useData = () => {
 };
 
 export const DataProvider = ({ children }) => {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
+  const [selectedItem, setSelectedItem] = useState("");
+  const [field, setField] = useState("All");
+  const [getItem, setItem] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [user,setUser]=useState({})
-  const baseURL = "http://localhost:5000"
+  const baseURL = "http://192.168.79.229:5000"
   const startLoading = () => {
     setLoading(true);
   };
@@ -42,21 +45,40 @@ export const DataProvider = ({ children }) => {
   useEffect(() => {  
     const performSearch = async () => {
       try {
-        const response = await axios.get(`${baseURL}/search?q=${query}`); 
+        const response = await axios.get(`${baseURL}/getitem?field=${field}&q=${query}`); 
             if(response){
-              setSearchResult(response.data);
+              setItem(response.data);
             }
       } catch (error) {
         console.error('Error searching:',error);
       } 
     };
-
     if (query.length>2) {
       performSearch();
     } else {
         setSearchResult([]);
     }
-  }, [query]);
+  }, [query,field]);
+
+
+
+  useEffect(() => {  
+    const getFoodItem = async () => {
+      try {
+        const response = await axios.get(`${baseURL}/getallitem`); 
+            if(response){
+              setItem(response.data);
+            }
+      } catch (error) {
+        console.error('Error searching:',error);
+      } 
+    };
+    getFoodItem();
+    console.log("hook1")
+
+  }, []);
+
+
   return (
     <DateContext.Provider value={{
        query, 
@@ -66,7 +88,13 @@ export const DataProvider = ({ children }) => {
        stopLoading,
        user,
        setUser,
-       searchResult
+       searchResult,
+       field, 
+       setField,
+       getItem, 
+       setItem,
+       selectedItem, 
+       setSelectedItem
        }}>
       {children}
     </DateContext.Provider>

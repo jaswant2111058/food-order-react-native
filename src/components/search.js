@@ -8,8 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function Search() {
 
-    const [query, setQuery] = useState("");
-    const [field, setField] = useState("All");
+    const{field, setField,query, setQuery} =useData()
     console.log(field)
 
     return (
@@ -26,8 +25,9 @@ export default function Search() {
                             >
                                 <Picker.Item label="All" value="All" />
                                 <Picker.Item label="Price" value="price" />
-                                <Picker.Item label="Food Name" value="food_name" />
-                                <Picker.Item label="Starters" value="starters" />
+                                <Picker.Item label="vegetarian" value="vegetarian" />
+                                <Picker.Item label="non-vegetarian" value="non_vegetarian" />
+                                <Picker.Item label="fast food" value="fast_food"/>
                             </Picker>
                         </View>
                         <Text style={styles.filterIcon}>
@@ -45,8 +45,6 @@ export default function Search() {
                             value={query}
                             placeholder={`Search In ${field}`}
                         />
-
-
                     </View>
                     <View >
 

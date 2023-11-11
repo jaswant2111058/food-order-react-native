@@ -6,10 +6,11 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/Entypo';
 import Star from 'react-native-vector-icons/AntDesign';
 import Search from '../components/search';
+import BottomNav from '../components/bottomNav';
 
 export default function Home({ navigation }) {
 
-    const { user } = useData()
+    const { user, getItem, setSelectedItem } = useData()
     // user?.user_name?console.log("yes"):navigation.navigate('Login')
     return (
         <>
@@ -36,40 +37,54 @@ export default function Home({ navigation }) {
                     </View>
                     <ScrollView>
                         <View style={styles.foods}>
-                            <Pressable  onPress={() => navigation.navigate('Order')} >
-                                <View style={styles.food}>
-                                    <View style={styles.foodImageWrapper}>
-                                        <Image
-                                            style={styles.foodImage}
-                                            source={require('../../assets/images/signup2.png')}
-                                        />
-                                    </View>
-                                    <View >
-                                        <Text
-                                            style={styles.foodName} >
-                                            Cheezy Burger
-                                        </Text>
-                                    </View>
-                                    <View style={styles.foodPriceRating}>
-                                        <View style={styles.foodRating}>
-                                            <Star name="star" size={17} color={'#FBBD10'} />
-                                            <Star name="star" size={17} color={'#FBBD10'} />
-                                            <Star name="star" size={17} color={'#FBBD10'} />
-                                            <Star name="star" size={17} color={'#FBBD10'} />
-                                            <Star name="star" size={17} color={'#FBBD10'} />
-                                        </View>
-                                        <View style={styles.foodPrice}>
-                                            <Text>
-                                                ₹ 200
-                                            </Text>
-                                        </View>
-                                    </View>
-                                </View>
-                            </Pressable>
+
+                            {
+                                getItem.map((item) => {
+                                    return (
+                                        <>
+
+                                            <Pressable onPress={() => {setSelectedItem(item); navigation.navigate('Order')}} key={item._id} >
+                                                <View style={styles.food}>
+                                                    <View style={styles.foodImageWrapper}>
+                                                        <Image
+                                                            style={styles.foodImage}
+                                                            source={{uri:`http://192.168.79.229:5000/img/${item.img}` }}
+                                                        />
+                                                    </View>
+                                                    <View >
+                                                        <Text
+                                                            style={styles.foodName} >
+                                                            {item.itemName}
+                                                        </Text>
+                                                    </View>
+                                                    <View style={styles.foodPriceRating}>
+                                                        <View style={styles.foodRating}>
+                                                            <Star name="star" size={17} color={'#FBBD10'} />
+                                                            <Star name="star" size={17} color={'#FBBD10'} />
+                                                            <Star name="star" size={17} color={'#FBBD10'} />
+                                                            <Star name="star" size={17} color={'#FBBD10'} />
+                                                            <Star name="star" size={17} color={'#FBBD10'} />
+                                                        </View>
+                                                        <View style={styles.foodPrice}>
+                                                            <Text>
+                                                                ₹ {item.price}
+                                                            </Text>
+                                                        </View>
+                                                    </View>
+                                                </View>
+                                            </Pressable>
+
+
+                                        </>
+                                    )
+                                })
+                            }
                         </View>
                     </ScrollView>
+                    
                 </View>
             </View>
+            <BottomNav />
         </>
     );
 }
