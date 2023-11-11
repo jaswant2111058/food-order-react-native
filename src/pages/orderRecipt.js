@@ -1,16 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, Pressable, TouchableHighlight } from 'react-native';
 import { useData } from '../hooks/hooks';
 import QRCode from 'react-native-qrcode-svg';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/Entypo';
 import Rupee from 'react-native-vector-icons/FontAwesome';
+import Icon2 from 'react-native-vector-icons/AntDesign';
 import BottomNav from '../components/bottomNav';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 export default function OrderRecipt({ navigation }) {
 
     const [recipt, setRecipt] = useState({})
-
 
     useEffect(() => {
         const isUser = async () => {
@@ -18,8 +19,10 @@ export default function OrderRecipt({ navigation }) {
                 const value = await AsyncStorage.getItem('order');
                 if (value !== null) {
                     setRecipt(JSON.parse(value))
+                    console.log(recipt)
                 } else {
                     console.log('No data found');
+
                 }
             } catch (error) {
                 console.error('Error retrieving data: ', error);
@@ -27,6 +30,7 @@ export default function OrderRecipt({ navigation }) {
         };
         isUser();
     }, [])
+
     return (
         <>
             <View style={styles.homeWrapper}>
@@ -58,7 +62,7 @@ export default function OrderRecipt({ navigation }) {
                         <View>
                             <Text
                                 style={styles.foodName} >
-                                {recipt?.itemName}
+                                {recipt?.item_name}
                             </Text>
                         </View>
                         <View style={styles.qrcode}>
@@ -72,7 +76,7 @@ export default function OrderRecipt({ navigation }) {
                         <View>
                             <Text
                                 style={styles.name} >
-                                {"name"}
+                                {recipt.name}
                             </Text>
                         </View>
                         <View style={styles.delevery}>
@@ -80,36 +84,47 @@ export default function OrderRecipt({ navigation }) {
                                 <Icon1 name='location' size={25} color={'#FBBD10'} />
                                 <Text
                                     style={styles.address} >
-                                    {recipt?.itemName}
+                                    {recipt?.fullAddress}
                                 </Text>
                             </View>
                             <View style={styles.dateWrapper}>
                                 <Icon1 name='calendar' size={25} color={'#FBBD10'} />
                                 <Text
                                     style={styles.date} >
-                                    {recipt?.itemName}
+                                    {recipt.date[0]+recipt.date[1]+recipt.date[2]+recipt.date[3]+recipt.date[4]+recipt.date[5]+recipt.date[6]+recipt.date[7]+recipt.date[8]+recipt.date[9]}
                                 </Text>
                             </View>
                             <View style={styles.timeWrapper}>
                                 <Icon1 name='clock' size={25} color={'#FBBD10'} />
                                 <Text
                                     style={styles.time} >
-                                    {recipt?.itemName}
+                                    {`${recipt.startTime[11]+recipt.startTime[12]+recipt.startTime[13]+recipt.startTime[14]+recipt.startTime[15]} - ${recipt.endTime[11]+recipt.endTime[12]+recipt.endTime[13]+recipt.endTime[14]+recipt.endTime[15]}`}
                                 </Text>
                             </View>
                             <View style={styles.priceWrapper}>
                                 <Rupee name='rupee' size={25} color={'#FBBD10'} />
                                 <Text
                                     style={styles.price} >
-                                    {recipt?.itemName}
+                                    {recipt?.price}
                                 </Text>
                             </View>
                         </View>
                     </View>
-
                 </View>
             </View>
-            <BottomNav />
+            <View style={styles.NavWrapper}>
+                <View style={styles.NavMain}>
+                    <TouchableHighlight onPress={() => { navigation.navigate('Home') }}>
+                        <Rupee name='home' size={30} />
+                    </TouchableHighlight>
+                    <TouchableHighlight onPress={() => { navigation.navigate('OrderRecipt') }}>
+                        <Text>Order</Text>
+                    </TouchableHighlight>
+                    <TouchableHighlight onPress={() => { navigation.navigate('Login') }}>
+                        <Icon2 name='logout' size={30} />
+                    </TouchableHighlight>
+                </View>
+            </View>
         </>
     );
 }
@@ -201,6 +216,18 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginLeft: 'auto',
         marginRight: 'auto',
+    },
+    NavWrapper: {
+        position: 'absolute',
+        bottom: 0,
+        paddingLeft: 10,
+        paddingRight: 10,
+        backgroundColor: 'white',
+    },
+    NavMain: {
+
+        flexDirection: 'row',
+        gap: 125,
     }
 
 });

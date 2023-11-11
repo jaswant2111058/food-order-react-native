@@ -1,15 +1,19 @@
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, TextInput, Pressable, Alert } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, Pressable, Alert,TouchableHighlight } from 'react-native';
 import { useData } from '../hooks/hooks';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/Entypo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icon2 from 'react-native-vector-icons/FontAwesome';
+import Icon3 from 'react-native-vector-icons/AntDesign';
 import BottomNav from '../components/bottomNav';
+import axios from 'axios';
+
 
 export default function Order({ navigation }) {
 
-    const { user, selectedItem, baseURL } = useData()
+    const { selectedItem,isLoading, startLoading, stopLoading,user,setUser,baseURL  } = useData()
     const [totalAmmount, setTotalAmmount] = useState(0)
     const [quanitity, setQuanitity] = useState(0)
     const [name, setName] = useState("")
@@ -18,30 +22,29 @@ export default function Order({ navigation }) {
     useEffect(() => {
         setTotalAmmount(selectedItem?.price * quanitity)
     }, [quanitity])
-    user?.user_name ? console.log("yes") : navigation.navigate('Login')
+    user?.username ? console.log("yes") : navigation.navigate('Login')
 
     const placeOrder = async () => {
         const data = {
-            name: user.user_name,
-            date: new date(),
-            startTime: new date(),
-            endTime: new date() + 1000 * 60 * 60,
+            name: user.username,
+            date: new Date(),
+            startTime: new Date(),
+            endTime: new Date(Date.now()+ 1000 * 60 * 60),
             fullAddress: address,
             item_type: selectedItem.item_type,
             item_name: selectedItem.itemName,
             item_id: selectedItem._id,
-            price: selectedItem.price,
+            price: totalAmmount,
             img: selectedItem.img,
             user_id: user.user_id,
         }
         try {
             startLoading();
-
             const response = await axios.post(`${baseURL}/placeorder`,
                 data,
                 {
                     headers: {
-                        Authorization: `${userToken}`,
+                        Authorization: `${user.Token}`,
                     },
                 }
             );
@@ -52,6 +55,7 @@ export default function Order({ navigation }) {
                 Alert.alert('Successfuly Placed Order');
                 stopLoading();
                 await AsyncStorage.setItem('order', JSON.stringify(response.data));
+                navigation.navigate('OrderRecipt')
                 console.log('Data saved successfully');
             }
         } catch (err) {
@@ -115,13 +119,7 @@ export default function Order({ navigation }) {
                         </View>
                     </View>
                     <View >
-                        <View>
-                            <TextInput style={styles.input}
-                                value={name}
-                                onChangeText={(value) => { setName(value) }}
-                                placeholder='Full Name'
-                            />
-                        </View>
+                        
                         <View>
                             <TextInput style={styles.input}
                                 value={address}
@@ -135,7 +133,7 @@ export default function Order({ navigation }) {
                         <Text style={styles.TotalAmmount}>
                             Total Ammount : ₹{totalAmmount}
                         </Text>
-                        <Pressable onPress={() => { navigation.navigate('OrderRecipt') }} >
+                        <Pressable onPress={() => {() => console.log("y"); placeOrder() }} >
                             <Text style={styles.payBtn}>
                                 Pay
                             </Text>
@@ -144,7 +142,19 @@ export default function Order({ navigation }) {
 
                 </View>
             </View>
-            <BottomNav />
+            <View style={styles.NavWrapper}>
+                <View style={styles.NavMain}>
+                    <TouchableHighlight onPress={() => {  navigation.navigate('Home') }}>
+                        <Icon2 name='home' size={30}/>
+                    </TouchableHighlight>
+                    <TouchableHighlight onPress={() => {  navigation.navigate('OrderRecipt') }}>
+                        <Text>Order</Text>
+                    </TouchableHighlight>
+                    <TouchableHighlight onPress={() => {  navigation.navigate('Login') }}>
+                        <Icon3 name='logout' size={30}/>
+                    </TouchableHighlight>
+                </View>
+            </View>
         </>
     );
 }
@@ -254,6 +264,18 @@ const styles = StyleSheet.create({
         marginRight: 'auto',
         borderRadius: 20,
         borderColor: '#FBBD10'
+    },
+    NavWrapper:{
+        position:'absolute',
+        bottom:0,
+        paddingLeft:10,
+        paddingRight:10,
+        backgroundColor:'white',
+    },
+    NavMain:{
+        
+        flexDirection:'row',
+        gap:125,
     }
 
 });

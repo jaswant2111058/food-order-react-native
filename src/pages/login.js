@@ -1,29 +1,18 @@
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { StyleSheet, Text, View, Image, TextInput, Pressable,Alert } from 'react-native';
 import { useData } from '../hooks/hooks';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
 export default function Login({navigation}) {
 
-    const { isLoading, startLoading, stopLoading,user,setUser } = useData();
-    user?.user_name?navigation.navigate('Home'):console.log(user)
+    const { isLoading, startLoading, stopLoading,user,setUser,baseURL } = useData();
+    user?.username?navigation.navigate('Home'):console.log(user)
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const baseURL = "http://192.168.79.229:5000"
-
-    const showAlert = (  ) => {
-        Alert.alert(
-          'Name Required',
-          'Player Name Required to continuie',
-          [
-            {
-              text: 'OK',
-            },
-          ],
-          { cancelable: false }
-        );
-      };
+   
+    
 
     const login = async () => {
         console.log("yes")
@@ -33,6 +22,7 @@ export default function Login({navigation}) {
           const response = await axios.post(`${baseURL}/login`, user);
           if (response) {
             setUser(response.data.user); 
+            await AsyncStorage.setItem('user', JSON.stringify(response.data.user));
             navigation.navigate('Home') 
           } else {
            console.log(response)

@@ -1,17 +1,17 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView, Pressable,TouchableHighlight } from 'react-native';
 import { useData } from '../hooks/hooks';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/Entypo';
 import Star from 'react-native-vector-icons/AntDesign';
 import Search from '../components/search';
-import BottomNav from '../components/bottomNav';
+import Icon2 from 'react-native-vector-icons/FontAwesome';
 
 export default function Home({ navigation }) {
 
     const { user, getItem, setSelectedItem } = useData()
-    // user?.user_name?console.log("yes"):navigation.navigate('Login')
+     user?.username?console.log("yes"):navigation.navigate('Login')
     return (
         <>
             <View style={styles.homeWrapper}>
@@ -84,7 +84,19 @@ export default function Home({ navigation }) {
                     
                 </View>
             </View>
-            <BottomNav />
+            <View style={styles.NavWrapper}>
+                <View style={styles.NavMain}>
+                    <TouchableHighlight onPress={() => {  navigation.navigate('Home') }}>
+                        <Icon2 name='home' size={30}/>
+                    </TouchableHighlight>
+                    <TouchableHighlight onPress={() => {  navigation.navigate('OrderRecipt') }}>
+                        <Text>Order</Text>
+                    </TouchableHighlight>
+                    <TouchableHighlight onPress={() => {  navigation.navigate('Login') }}>
+                        <Star name='logout' size={30}/>
+                    </TouchableHighlight>
+                </View>
+            </View>
         </>
     );
 }
@@ -152,5 +164,17 @@ const styles = StyleSheet.create({
     foodPriceRating: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+    },
+    NavWrapper:{
+        position:'absolute',
+        bottom:0,
+        paddingLeft:10,
+        paddingRight:10,
+        backgroundColor:'white',
+    },
+    NavMain:{
+        
+        flexDirection:'row',
+        gap:125,
     }
 });

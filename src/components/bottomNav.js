@@ -7,19 +7,19 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon1 from 'react-native-vector-icons/AntDesign';
 
 
-export default function BottomNav() {
+export default function BottomNav({ navigation }) {
 
     return (
         <>
             <View style={styles.NavWrapper}>
                 <View style={styles.NavMain}>
-                    <TouchableHighlight onPress={() => { console.log("dfghjkl") }}>
+                    <TouchableHighlight onPress={() => {  navigation.navigate('Home') }}>
                         <Icon name='home' size={30}/>
                     </TouchableHighlight>
-                    <TouchableHighlight onPress={() => { console.log("dfghjkl") }}>
+                    <TouchableHighlight onPress={() => {  navigation.navigate('OrderRecipt') }}>
                         <Text>Order</Text>
                     </TouchableHighlight>
-                    <TouchableHighlight onPress={() => { console.log("dfghjkl") }}>
+                    <TouchableHighlight onPress={() => {  navigation.navigate('Login') }}>
                         <Icon1 name='logout' size={30}/>
                     </TouchableHighlight>
                 </View>
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     NavMain:{
         
         flexDirection:'row',
-        gap:130,
+        gap:125,
     }
 
 

@@ -6,6 +6,7 @@ import SignUp from './src/pages/signup';
 import Home from './src/pages/home';
 import Order from './src/pages/orders';
 import OrderRecipt from './src/pages/orderRecipt';
+import BottomNav from './src/components/bottomNav';
 const Stack = createStackNavigator();
 import { DataProvider } from './src/hooks/hooks';
 
@@ -19,6 +20,7 @@ export default function App() {
           <Stack.Screen name="Home" component={Home} options={{ headerShown: false }}/>
           <Stack.Screen name="Order" component={Order} options={{ headerShown: false }}/>
           <Stack.Screen name="OrderRecipt" component={OrderRecipt} options={{ headerShown: false }}/>
+          <Stack.Screen name="BottomNav" component={BottomNav} options={{ headerShown: false }}/>
         </Stack.Navigator>
       </NavigationContainer>
     </DataProvider>

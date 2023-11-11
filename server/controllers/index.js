@@ -1,6 +1,7 @@
 const items = require("../model/items");
 const users = require("../model/user");
 const orderList = require("../model/orderList");
+const bcrypt = require('bcryptjs');
 
 
 exports.showItems = async (req, res, next) => {
@@ -55,16 +56,17 @@ exports.showallItems = async (req, res, next) => {
 exports.placeOrder = async (req, res) => {
     try {
         const {
+            name,
             item_id,
             user_id,
             date,
             startTime,
+            endTime,
             fullAddress,
             item_type,
             price,
-            itemName,
+            item_name,
             img,
-            content,
         } = req.body
         console.log(req.body)
         //   const payment_verification = await payments.findOne({ payment_id })
@@ -76,17 +78,18 @@ exports.placeOrder = async (req, res) => {
             }
             else {
                 const details = {
+                    name,
                     orderHash: hash,
                     item_id,
                     user_id,
                     date,
                     startTime,
+                    endTime,
                     fullAddress,
                     item_type,
                     price,
-                    itemName,
+                    item_name,
                     img,
-                    content,
                     status: false,
                 }
                 const new_order = new orderList(details);
@@ -101,6 +104,7 @@ exports.placeOrder = async (req, res) => {
         //     res.status(400).json("unauterized access");
         // }
     } catch (error) {
+        console.log(error)
         res.status(500).json({
             message: error.message
         })
