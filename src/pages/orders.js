@@ -1,15 +1,15 @@
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, Pressable, Alert } from 'react-native';
 import { useData } from '../hooks/hooks';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/Entypo';
-import Star from 'react-native-vector-icons/AntDesign';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import BottomNav from '../components/bottomNav';
 
 export default function Order({ navigation }) {
 
-    const { user, selectedItem } = useData()
+    const { user, selectedItem, baseURL } = useData()
     const [totalAmmount, setTotalAmmount] = useState(0)
     const [quanitity, setQuanitity] = useState(0)
     const [name, setName] = useState("")
@@ -18,7 +18,53 @@ export default function Order({ navigation }) {
     useEffect(() => {
         setTotalAmmount(selectedItem?.price * quanitity)
     }, [quanitity])
-    // user?.user_name?console.log("yes"):navigation.navigate('Login')
+    user?.user_name ? console.log("yes") : navigation.navigate('Login')
+
+    const placeOrder = async () => {
+        const data = {
+            name: user.user_name,
+            date: new date(),
+            startTime: new date(),
+            endTime: new date() + 1000 * 60 * 60,
+            fullAddress: address,
+            item_type: selectedItem.item_type,
+            item_name: selectedItem.itemName,
+            item_id: selectedItem._id,
+            price: selectedItem.price,
+            img: selectedItem.img,
+            user_id: user.user_id,
+        }
+        try {
+            startLoading();
+
+            const response = await axios.post(`${baseURL}/placeorder`,
+                data,
+                {
+                    headers: {
+                        Authorization: `${userToken}`,
+                    },
+                }
+            );
+
+            if (response.data.error) {
+                Alert.alert('Error', response.data.error);
+            } else {
+                Alert.alert('Successfuly Placed Order');
+                stopLoading();
+                await AsyncStorage.setItem('order', JSON.stringify(response.data));
+                console.log('Data saved successfully');
+            }
+        } catch (err) {
+            console.error('Error during addEvent:', err.message);
+            Alert.alert('Error', 'An unexpected error occurred during addEvent.');
+        } finally {
+            stopLoading();
+        }
+    };
+
+
+
+
     return (
         <>
             <View style={styles.homeWrapper}>
@@ -42,7 +88,7 @@ export default function Order({ navigation }) {
                     <View style={styles.infoBar}>
                         <Image
                             style={styles.foodImage}
-                            source={{uri:`http://192.168.79.229:5000/img/${selectedItem?.img}` }}
+                            source={{ uri: `http://192.168.79.229:5000/img/${selectedItem?.img}` }}
                         />
                         <Text
                             style={styles.foodName} >
@@ -70,18 +116,18 @@ export default function Order({ navigation }) {
                     </View>
                     <View >
                         <View>
-                        <TextInput style={styles.input}
-                        value={name}
-                        onChangeText={(value)=>{setName(value)}}
-                        placeholder='Full Name'
-                        />
+                            <TextInput style={styles.input}
+                                value={name}
+                                onChangeText={(value) => { setName(value) }}
+                                placeholder='Full Name'
+                            />
                         </View>
                         <View>
-                        <TextInput style={styles.input}
-                        value={address}
-                        onChangeText={(value)=>{setAddress(value)}}
-                        placeholder='Full Address'
-                        />
+                            <TextInput style={styles.input}
+                                value={address}
+                                onChangeText={(value) => { setAddress(value) }}
+                                placeholder='Full Address'
+                            />
                         </View>
                     </View>
 
@@ -89,20 +135,19 @@ export default function Order({ navigation }) {
                         <Text style={styles.TotalAmmount}>
                             Total Ammount : ₹{totalAmmount}
                         </Text>
-                        <Pressable onPress={()=>{navigation.navigate('OrderRecipt')}} >
+                        <Pressable onPress={() => { navigation.navigate('OrderRecipt') }} >
                             <Text style={styles.payBtn}>
                                 Pay
                             </Text>
                         </Pressable>
                     </View>
-                    
+
                 </View>
             </View>
-            <BottomNav/> 
+            <BottomNav />
         </>
     );
 }
-
 const styles = StyleSheet.create({
 
     homeWrapper: {
@@ -198,17 +243,17 @@ const styles = StyleSheet.create({
     TotalAmmount: {
         fontSize: 20,
     },
-    input:{
-        marginTop:20,
-        borderWidth:1,
-        width:300,
-        height:40,
-        fontSize:20,
-        textAlign:'center',
-        marginLeft:'auto',
-        marginRight:'auto',
-        borderRadius:20,
-        borderColor:'#FBBD10'
+    input: {
+        marginTop: 20,
+        borderWidth: 1,
+        width: 300,
+        height: 40,
+        fontSize: 20,
+        textAlign: 'center',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        borderRadius: 20,
+        borderColor: '#FBBD10'
     }
 
 });

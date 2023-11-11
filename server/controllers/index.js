@@ -67,9 +67,6 @@ exports.placeOrder = async (req, res) => {
             content,
         } = req.body
         console.log(req.body)
-
-
-
         //   const payment_verification = await payments.findOne({ payment_id })
         // if (payment_verification && payment_verification?.verification) 
         // {
@@ -94,12 +91,6 @@ exports.placeOrder = async (req, res) => {
                 }
                 const new_order = new orderList(details);
                 const data = await new_order.save()
-                await users.updateOne({ _id: user_id }, {
-                    itemName,
-                    order_id,
-                    price,
-                    img,
-                })
                 console.log(data);
                 res.status(200).send(data);
             }

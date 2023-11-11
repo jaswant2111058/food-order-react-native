@@ -1,4 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native';
 import { useData } from '../hooks/hooks';
@@ -7,16 +7,26 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Icon1 from 'react-native-vector-icons/Entypo';
 import Rupee from 'react-native-vector-icons/FontAwesome';
 import BottomNav from '../components/bottomNav';
-
 export default function OrderRecipt({ navigation }) {
 
-    const { user, selectedItem } = useData()
     const [recipt, setRecipt] = useState({})
-   
+
 
     useEffect(() => {
-        
-    }, )
+        const isUser = async () => {
+            try {
+                const value = await AsyncStorage.getItem('order');
+                if (value !== null) {
+                    setRecipt(JSON.parse(value))
+                } else {
+                    console.log('No data found');
+                }
+            } catch (error) {
+                console.error('Error retrieving data: ', error);
+            }
+        };
+        isUser();
+    }, [])
     return (
         <>
             <View style={styles.homeWrapper}>
@@ -42,18 +52,18 @@ export default function OrderRecipt({ navigation }) {
                         <View>
                             <Image
                                 style={styles.foodImage}
-                                source={{ uri: `http://192.168.79.229:5000/img/${selectedItem?.img}` }}
+                                source={{ uri: `http://192.168.79.229:5000/img/${recipt?.img}` }}
                             />
                         </View>
                         <View>
                             <Text
                                 style={styles.foodName} >
-                                {selectedItem?.itemName}
+                                {recipt?.itemName}
                             </Text>
                         </View>
                         <View style={styles.qrcode}>
                             <QRCode
-                                value={"qrCodeData"}
+                                value={recipt?.orderHash}
                                 size={200}
                                 color="black"
                                 backgroundColor="white"
@@ -70,36 +80,36 @@ export default function OrderRecipt({ navigation }) {
                                 <Icon1 name='location' size={25} color={'#FBBD10'} />
                                 <Text
                                     style={styles.address} >
-                                    {selectedItem?.itemName}
+                                    {recipt?.itemName}
                                 </Text>
                             </View>
                             <View style={styles.dateWrapper}>
                                 <Icon1 name='calendar' size={25} color={'#FBBD10'} />
                                 <Text
                                     style={styles.date} >
-                                    {selectedItem?.itemName}
+                                    {recipt?.itemName}
                                 </Text>
                             </View>
                             <View style={styles.timeWrapper}>
                                 <Icon1 name='clock' size={25} color={'#FBBD10'} />
                                 <Text
                                     style={styles.time} >
-                                    {selectedItem?.itemName}
+                                    {recipt?.itemName}
                                 </Text>
                             </View>
                             <View style={styles.priceWrapper}>
-                            <Rupee name='rupee' size={25} color={'#FBBD10'} />
+                                <Rupee name='rupee' size={25} color={'#FBBD10'} />
                                 <Text
                                     style={styles.price} >
-                                    {selectedItem?.itemName}
+                                    {recipt?.itemName}
                                 </Text>
                             </View>
                         </View>
                     </View>
-                    
+
                 </View>
             </View>
-            <BottomNav/>
+            <BottomNav />
         </>
     );
 }
@@ -134,12 +144,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 20,
     },
-    container:{
-        width:'auto',
-        height:'auto',
-        padding:5,
-        borderWidth:1,
-        borderRadius:20,
+    container: {
+        width: 'auto',
+        height: 'auto',
+        padding: 5,
+        borderWidth: 1,
+        borderRadius: 20,
     },
     foodImage: {
         width: 100,
@@ -179,7 +189,7 @@ const styles = StyleSheet.create({
         height: 150,
         marginLeft: 'auto',
         marginRight: 'auto',
-    },   
+    },
     name: {
         textAlign: 'center',
         fontSize: 25,

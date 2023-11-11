@@ -94,7 +94,8 @@ export const DataProvider = ({ children }) => {
        getItem, 
        setItem,
        selectedItem, 
-       setSelectedItem
+       setSelectedItem,
+       baseURL
        }}>
       {children}
     </DateContext.Provider>

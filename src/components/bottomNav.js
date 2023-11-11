@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, Image, TextInput, TouchableHighlight, Pressable
 import { Picker } from '@react-native-picker/picker';
 import { useData } from '../hooks/hooks';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon1 from 'react-native-vector-icons/AntDesign';
 
 
 export default function BottomNav() {
@@ -16,10 +17,10 @@ export default function BottomNav() {
                         <Icon name='home' size={30}/>
                     </TouchableHighlight>
                     <TouchableHighlight onPress={() => { console.log("dfghjkl") }}>
-                        <Icon name='home' size={30}/>
+                        <Text>Order</Text>
                     </TouchableHighlight>
                     <TouchableHighlight onPress={() => { console.log("dfghjkl") }}>
-                        <Icon name='home' size={30}/>
+                        <Icon1 name='logout' size={30}/>
                     </TouchableHighlight>
                 </View>
             </View>
